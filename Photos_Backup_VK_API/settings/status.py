@@ -1,0 +1,12 @@
+from http import HTTPStatus
+
+
+STATUS = {
+    'OK': HTTPStatus.OK,
+    'CONFLICT': HTTPStatus.CONFLICT,
+    'CREATED': HTTPStatus.CREATED,
+    'ACCEPTED': HTTPStatus.ACCEPTED,
+    'UNAUTHORIZED': HTTPStatus.UNAUTHORIZED,
+    'FORBIDDEN': HTTPStatus.FORBIDDEN,
+    'NOT_FOUND': HTTPStatus.NOT_FOUND,
+}
