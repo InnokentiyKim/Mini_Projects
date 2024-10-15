@@ -36,10 +36,9 @@ class YaDisk:
             self.active_folder = folder_name
             print("Folder already exist")
             return True
-        else:
-            print('Folder creation failed!')
-            print(response.json()['description'])
-            return False
+        print('Folder creation failed!')
+        print(response.json()['description'])
+        return False
 
     def upload_photo(self, photo_url: str, disk_path: str) -> bool:
         disk_url = self.base_url + f'/{self.version}/disk/resources/upload'
@@ -52,8 +51,7 @@ class YaDisk:
             return False
         if response.status_code == HTTPStatus.ACCEPTED:
             return True
-        else:
-            return False
+        return False
 
     def upload_all_photos(self, vk_user, folder_name: str) -> int:
         uploaded_files = 0
@@ -68,3 +66,4 @@ class YaDisk:
             print('Done!')
             print('Number of uploaded files:', uploaded_files, '/', photos_count)
         return uploaded_files
+

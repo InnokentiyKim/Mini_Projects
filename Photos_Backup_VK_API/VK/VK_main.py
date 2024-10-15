@@ -28,7 +28,6 @@ class VK:
 
     @staticmethod
     def _get_photos_amount():
-        amount = 0
         while True:
             try:
                 amount = int(input("Enter photos amount: "))
@@ -70,32 +69,9 @@ class VK:
                     item_info['url'] = sizes_urls[max_size]
                     self.photos_info['items'].append(item_info)
                     self.photos_info['count'] += 1
-                    self.photos_info['names'].append \
-                        (self._generate_photo_name(item_info['likes_count'], item_info['date']))
+                    self.photos_info['names'].append(self._generate_photo_name(item_info['likes_count'], item_info['date']))
                 return True
-            except json.decoder.JSONDecodeError:
-                print('Failed while getting users photos!')
+            except Exception:
                 print(all_info['error']['error_msg'])
                 return False
-            except KeyError:
-                print('Failed while getting users photos!')
-                print(all_info['error']['error_msg'])
-                return False
-            except TypeError:
-                print('Failed while getting users photos!')
-                print(all_info['error']['error_msg'])
-                return False
-            except ValueError:
-                print('Failed while getting users photos!')
-                print(all_info['error']['error_msg'])
-                return False
-            except IndexError:
-                print('Failed while getting users photos!')
-                print(all_info['error']['error_msg'])
-                return False
-            except AttributeError:
-                print('Failed while getting users photos!')
-                print(all_info['error']['error_msg'])
-                return False
-        else:
-            return False
+        return False
