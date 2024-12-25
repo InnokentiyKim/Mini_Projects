@@ -1,8 +1,11 @@
 *.venv/
 venv/
+env/
 __pycache__/
 .idea/
 .idea
+.vscode/
+.vscode
 *.env
 *.ini
 
