@@ -1,5 +1,4 @@
 import uuid
-
 from config import DSN
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
@@ -11,7 +10,7 @@ engine = create_async_engine(DSN)
 
 Session = async_sessionmaker(bind=engine, expire_on_commit=False)
 
-class Base(AsyncAttrs, DeclarativeBase):
+class Base(DeclarativeBase, AsyncAttrs):
 
     @property
     def id_dict(self):
@@ -24,8 +23,8 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(60), nullable=False)
-    tokens: Mapped[list["Token"]] = relationship("Token", lazy="joined", back_populates='user')
-    todos: Mapped[list["Todo"]] = relationship("Todo", lazy="joined", back_populates='user')
+    tokens: Mapped[list["Token"]] = relationship("Token", lazy="joined", back_populates="user")
+    todos: Mapped[list["Todo"]] = relationship("Todo", lazy="joined", back_populates="user")
 
 
 class Token(Base):
@@ -35,7 +34,7 @@ class Token(Base):
     token: Mapped[uuid.UUID] = mapped_column(UUID, unique=True, server_default=func.gen_random_uuid())
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     user_id: Mapped[int] = mapped_column(ForeignKey("todo_user.id"))
-    user: Mapped["User"] = relationship("User", lazy="joined", back_populates='tokens')
+    user: Mapped["User"] = relationship("User", lazy="joined", back_populates="tokens")
 
     @property
     def dict(self):
@@ -70,8 +69,10 @@ class Todo(Base):
             "end_time": end_time,
         }
 
+
 ORM_OBJ = Todo | User | Token
 ORM_CLS = type[Todo] | type[User] | type[Token]
+
 
 async def init_orm():
     async with engine.begin() as conn:

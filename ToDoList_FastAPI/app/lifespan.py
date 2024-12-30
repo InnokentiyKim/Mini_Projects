@@ -8,5 +8,5 @@ async def lifespan(app: FastAPI):
     print("START")
     await init_orm()
     yield
-    print("END")
     await close_orm()
+    print("END")
