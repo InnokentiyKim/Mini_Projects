@@ -33,8 +33,13 @@ class Token(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     token: Mapped[uuid.UUID] = mapped_column(UUID, unique=True, server_default=func.gen_random_uuid())
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     user_id: Mapped[int] = mapped_column(ForeignKey("todo_user.id"))
     user: Mapped["User"] = relationship("User", lazy="joined", back_populates='tokens')
+
+    @property
+    def dict(self):
+        return {"token": self.token}
 
 
 class Todo(Base):
@@ -65,8 +70,8 @@ class Todo(Base):
             "end_time": end_time,
         }
 
-ORM_OBJ = Todo
-ORM_CLS = type[Todo]
+ORM_OBJ = Todo | User | Token
+ORM_CLS = type[Todo] | type[User] | type[Token]
 
 async def init_orm():
     async with engine.begin() as conn:

@@ -1,11 +1,14 @@
-from fastapi import FastAPI
-from sqlalchemy import func
+from fastapi import FastAPI, HTTPException
+from sqlalchemy import func, select
 from lifespan import lifespan
-from models import Todo
+from models import Todo, User, Token
 from dependency import SessionDependency
 from schema import (GetTodoResponse, CreateTodoResponse, CreateTodoRequest,
-                    UpdateTodoResponse, UpdateTodoRequest, DeleteTodoResponse)
+                    UpdateTodoResponse, UpdateTodoRequest, DeleteTodoResponse,
+                    CreateUserRequest, CreateUserResponse,
+                    LoginRequest, LoginResponse)
 import crud
+import auth
 from constants import STATUS_DELETED
 
 
@@ -47,3 +50,26 @@ async def delete_todo(todo_id: int, session: SessionDependency):
     todo = await crud.get_item_by_id(session, Todo, todo_id)
     await crud.delete_item(session, todo)
     return STATUS_DELETED
+
+
+@app.post("/api/v1/user", response_model=CreateUserResponse, tags=["user"])
+async def create_user(session: SessionDependency, user_request: CreateUserRequest):
+    user_request_dict = user_request.model_dump()
+    user_request_dict["password"] = auth.hash_password(user_request_dict["password"])
+    user = User(**user_request_dict)
+    await crud.add_item(session, user)
+    return user.id_dict
+
+
+@app.post("/api/v1/login", response_model=LoginResponse, tags=['user'])
+async def login(login_request: LoginRequest, session: SessionDependency):
+    user_query = select(User).where(User.name == login_request.name)
+    user = await session.scalar(user_query)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Username or password is incorrect")
+    if not auth.check_password(login_request.password, user.password):
+        raise HTTPException(status_code=401, detail="Username or password is incorrect")
+    token = Token(user_id=user.id)
+    await crud.add_item(session, token)
+    return token.dict
+
