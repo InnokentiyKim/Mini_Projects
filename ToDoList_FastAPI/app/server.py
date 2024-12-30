@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from sqlalchemy import func, select
 from lifespan import lifespan
 from models import Todo, User, Token
-from dependency import SessionDependency
+from dependency import SessionDependency, TokenDependency
 from schema import (GetTodoResponse, CreateTodoResponse, CreateTodoRequest,
                     UpdateTodoResponse, UpdateTodoRequest, DeleteTodoResponse,
                     CreateUserRequest, CreateUserResponse,

@@ -9,3 +9,5 @@ POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'secret')
 
 
 DSN = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+TOKEN_TTL_SEC = int(os.getenv('TOKEN_TTL_SEC', 24 * 60 * 60))
