@@ -27,18 +27,26 @@ async def get_todo(session: SessionDependency, todo_id: int):
 
 
 @app.post("/api/v1/todo", response_model=CreateTodoResponse, tags=["todo"])
-async def create_todo(todo_request: CreateTodoRequest, session: SessionDependency):
-    todo = Todo(title=todo_request.title, description=todo_request.description, important=todo_request.important)
+async def create_todo(todo_request: CreateTodoRequest, session: SessionDependency, token: TokenDependency):
+    todo = Todo(
+        title=todo_request.title,
+        description=todo_request.description,
+        important=todo_request.important,
+        user_id=token.user_id
+    )
     await crud.add_item(session, todo)
     return todo.id_dict
 
 
 @app.patch("/api/v1/todo/{todo_id}", response_model=UpdateTodoResponse, tags=["todo"])
-async def update_todo(todo_id: int, todo_request: UpdateTodoRequest, session: SessionDependency):
-    todo_json = todo_request.dict(exclude_unset=True)
+async def update_todo(todo_id: int, todo_request: UpdateTodoRequest,
+                      session: SessionDependency, token: TokenDependency):
+    todo_json = todo_request.model_dump(exclude_unset=True)
     if todo_request.done:
         todo_json['end_time'] = func.now()
     todo = await crud.get_item_by_id(session, Todo, todo_id)
+    if todo.user_id != token.user_id:
+        raise HTTPException(403, "Access denied")
     for field, value in todo_json.items():
         setattr(todo, field, value)
     await crud.add_item(session, todo)
