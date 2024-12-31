@@ -1,19 +1,14 @@
 import requests
 
-response = requests.post()
-
-# response = requests.post(" http://127.0.0.1:8080/api/v1/todo",
-#                          json={"title": "t_1", "description": "d_1", "important": False}
-#                          )
+# response = requests.post(f" http://127.0.0.1:8000/api/v1/user",
+#                          json={"name": "user_1", "password": "1234"})
 #
 # print(response.status_code)
-# todo_id = response.json()['id']
-#
-# response = requests.patch(f" http://127.0.0.1:8080/api/v1/todo/{todo_id}",
-#                          json={"done": True}
-#                          )
-#
-# response = requests.get(f" http://127.0.0.1:8080/api/v1/todo/{todo_id}",
-#                          json={"done": True}
-#                          )
 # print(response.json())
+
+
+response = requests.post(f" http://127.0.0.1:8000/api/v1/login",
+                         json={"name": "user_1", "password": "1234"})
+
+print(response.status_code)
+print(response.json())
