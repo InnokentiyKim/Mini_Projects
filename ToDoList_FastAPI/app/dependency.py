@@ -21,7 +21,7 @@ async def get_token(x_token: Annotated[uuid.UUID, Header()], session: SessionDep
         Token.token == x_token,
         Token.created_at >= datetime.datetime.now() - datetime.timedelta(seconds=TOKEN_TTL_SEC)
     )
-    token = session.scalar(token_query)
+    token = await session.scalar(token_query)
     if token is None:
         raise HTTPException(401, "Invalid token")
     return token

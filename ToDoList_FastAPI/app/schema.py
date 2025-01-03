@@ -15,6 +15,7 @@ class GetTodoResponse(BaseModel):
     done: bool
     start_time: datetime
     end_time: datetime | None
+    user_id: int
 
 
 class CreateTodoRequest(BaseModel):

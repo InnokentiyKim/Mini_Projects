@@ -67,6 +67,7 @@ class Todo(Base):
             "done": self.done,
             "start_time": self.start_time.isoformat(),
             "end_time": end_time,
+            "user_id": self.user_id,
         }
 
 
