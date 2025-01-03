@@ -45,7 +45,7 @@ async def update_todo(todo_id: int, todo_request: UpdateTodoRequest,
     if todo_request.done:
         todo_json['end_time'] = func.now()
     todo = await crud.get_item_by_id(session, Todo, todo_id)
-    if todo.user_id != token.user_id:
+    if todo.user_id != token.user_id and token.user.role != 'admin':
         raise HTTPException(403, "Access denied")
     for field, value in todo_json.items():
         setattr(todo, field, value)

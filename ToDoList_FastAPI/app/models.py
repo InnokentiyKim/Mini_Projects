@@ -2,8 +2,9 @@ import uuid
 from config import DSN
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
-from sqlalchemy import String, Integer, Boolean, DateTime, UUID, func, ForeignKey
+from sqlalchemy import String, Integer, Boolean, DateTime, UUID, func, ForeignKey, CheckConstraint
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
+from custom_types import Role
 
 
 engine = create_async_engine(DSN)
@@ -19,12 +20,17 @@ class Base(DeclarativeBase, AsyncAttrs):
 
 class User(Base):
     __tablename__ = 'todo_user'
+    __tableargs__ = (
+        CheckConstraint("role in ('user', 'admin')")
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(60), nullable=False)
     tokens: Mapped[list["Token"]] = relationship("Token", lazy="joined", back_populates="user")
     todos: Mapped[list["Todo"]] = relationship("Todo", lazy="joined", back_populates="user")
+    role: Mapped[Role] = mapped_column(String, default="user")
+
 
 
 class Token(Base):
