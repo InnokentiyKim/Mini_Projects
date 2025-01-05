@@ -1,15 +1,15 @@
+import crud
+import auth
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import func, select
 from lifespan import lifespan
 from models import Todo, User, Token
 from dependency import SessionDependency, TokenDependency
+from constants import STATUS_DELETED
 from schema import (GetTodoResponse, CreateTodoResponse, CreateTodoRequest,
                     UpdateTodoResponse, UpdateTodoRequest, DeleteTodoResponse,
                     CreateUserRequest, CreateUserResponse,
                     LoginRequest, LoginResponse)
-import crud
-import auth
-from constants import STATUS_DELETED
 
 
 app = FastAPI(
@@ -80,4 +80,3 @@ async def login(login_request: LoginRequest, session: SessionDependency):
     token = Token(user_id=user.id)
     await crud.add_item(session, token)
     return token.dict
-
