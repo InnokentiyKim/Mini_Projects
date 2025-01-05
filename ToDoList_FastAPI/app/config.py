@@ -11,3 +11,8 @@ POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'postgres')
 DSN = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 TOKEN_TTL_SEC = int(os.getenv('TOKEN_TTL_SEC', 24 * 60 * 60))
+
+DEFAULT_ROLE = os.getenv("DEFAULT_ROLE", "user")
+
+ADMIN_NAME = os.getenv("ADMIN_NAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "12345")
